@@ -40,10 +40,21 @@ def add_to_cart():
     cart.loc[len(cart)] = item
     return redirect(url_for('home'))
 
-@app.route('/cart')
+@app.route('/cart', methods=['POST'])
 def mycart():
     print(cart)
-    return render_template('cart.html')
+    cart_names = cart.loc[:, ["name", "price", "ram", "storage", "battery", "quantity"]].values
+    subtotal = 0
+    shipping = 10
+    total = 0
+    for name, price, ram, storage, battery, quantity in cart_names:
+        subtotal += float(price)
+    subtotal = round(subtotal, 2)
+    discount = round(0.1*subtotal, 2)
+    total = round(subtotal + shipping - discount, 2)
+        
+    print(cart_names)
+    return render_template('cart.html', cart_mobs=cart_names, subtotal=subtotal, shipping=shipping, total=total, discount=discount)
 
 if __name__ =='__main__':  
     app.run(debug = True)  

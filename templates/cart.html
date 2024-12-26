@@ -214,10 +214,16 @@
                 <p>Verify everything before checkout. Happy Shopping!!</p>
             </div>
             <div class="content">
+               {% if cart_mobs|length == 0 %}
+                   <div class="alert alert-warning text-center" role="alert">
+                    Your cart is empty.
+                   </div>
+               {% elif cart_mobs|length != 0 %}
                 <div class="row">
                     <div class="col-md-12 col-lg-8">
                         <div class="items">
-                            <div class="product">
+                            {%for name,price,ram,storage,battery,quantity in cart_mobs%}
+                            <div class="product" id="{{name}}">
                                 <div class="row">
                                     <div class="col-md-3">
                                     </div> 
@@ -226,39 +232,44 @@
                                             <div class="row">
                                                 <div class="col-md-5 product-name">
                                                     <div class="product-name">
-                                                        <a href="#">Lorem Ipsum dolor</a>
+                                                        <a href="#">{{name}}</a>
                                                         <div class="product-info">
-                                                            <div>Display: <span class="value">5 inch</span></div>
-                                                            <div>RAM: <span class="value">4GB</span></div>
-                                                            <div>Memory: <span class="value">32GB</span></div>
+                                                            <div>Battery: <span class="value">{{battery}}mAh</span></div>
+                                                            <div>RAM: <span class="value">{{ram}}GB</span></div>
+                                                            <div>Memory: <span class="value">{{storage}}GB</span></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 quantity">
                                                     <label for="quantity">Quantity:</label>
-                                                    <input id="quantity" type="number" value="1" class="form-control quantity-input">
+                                                    <input id="quantity" min=1, type="number" value="{{quantity}}" class="form-control quantity-input">
+                                                    <button type="submit" onclick="removeItem('{{name}}')" class="btn btn-danger btn-sm mt-2">
+                                                        <i class="fas fa-trash"></i> Remove
+                                                    </button>
                                                 </div>
                                                 <div class="col-md-3 price">
-                                                    <span>$120</span>
+                                                    <span>${{price}}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-4">
                         <div class="summary">
                             <h3>Summary</h3>
-                            <div class="summary-item"><span class="text">Subtotal</span><span class="price">$360</span></div>
-                            <div class="summary-item"><span class="text">Discount</span><span class="price">$0</span></div>
-                            <div class="summary-item"><span class="text">Shipping</span><span class="price">$0</span></div>
-                            <div class="summary-item"><span class="text">Total</span><span class="price">$360</span></div>
-                            <button type="button" class="btn btn-primary btn-lg btn-block">Checkout</button>
+                            <div class="summary-item"><span class="text">Subtotal</span><span class="price">{{subtotal}}</span></div>
+                            <div class="summary-item"><span class="text">Discount</span><span class="price">{{discount}}</span></div>
+                            <div class="summary-item"><span class="text">Shipping</span><span class="price">{{shipping}}</span></div>
+                            <div class="summary-item"><span class="text">Total</span><span class="price">{{total}}</span></div>
+                            <button type="button" class="btn btn-primary btn-lg btn-block"><a href="/thanks"></a>Checkout</button>
                         </div>
                     </div>
                 </div> 
+                {% endif %}
             </div>
         </div>
     </section>
@@ -266,5 +277,11 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    function removeItem(productId) {
+        const productElement = document.getElementById(productId);
+        productElement.remove();
+    }
+</script>
 </body>
 </html>
