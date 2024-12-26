@@ -243,9 +243,12 @@
                                                 <div class="col-md-4 quantity">
                                                     <label for="quantity">Quantity:</label>
                                                     <input id="quantity" min=1, type="number" value="{{quantity}}" class="form-control quantity-input">
-                                                    <button type="submit" onclick="removeItem('{{name}}')" class="btn btn-danger btn-sm mt-2">
+                                                    <form action="/remove_item" method="POST">
+                                                        <input type="hidden" name="phone_name" value="{{name}}">
+                                                        <button type="submit" class="btn btn-danger btn-sm mt-2">
                                                         <i class="fas fa-trash"></i> Remove
-                                                    </button>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                                 <div class="col-md-3 price">
                                                     <span>${{price}}</span>

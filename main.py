@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import random
 
 df = pd.read_csv('data.csv')
-cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
+#cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
 
 app = Flask(__name__)
 
@@ -25,7 +25,9 @@ def home():
 
 
 
+global cart 
 cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     item = {
@@ -40,21 +42,32 @@ def add_to_cart():
     cart.loc[len(cart)] = item
     return redirect(url_for('home'))
 
-@app.route('/cart', methods=['POST'])
+@app.route('/cart')
 def mycart():
     print(cart)
     cart_names = cart.loc[:, ["name", "price", "ram", "storage", "battery", "quantity"]].values
     subtotal = 0
     shipping = 10
     total = 0
+
     for name, price, ram, storage, battery, quantity in cart_names:
         subtotal += float(price)
     subtotal = round(subtotal, 2)
     discount = round(0.1*subtotal, 2)
     total = round(subtotal + shipping - discount, 2)
-        
+    
+    print(cart)
     print(cart_names)
     return render_template('cart.html', cart_mobs=cart_names, subtotal=subtotal, shipping=shipping, total=total, discount=discount)
+
+@app.route('/remove_item', methods=['POST'])
+def remove_item():
+    global cart
+    phone_name = request.form.get('phone_name')
+    if phone_name in cart['name'].values:
+        cart = cart.loc[cart['name'] != phone_name]
+
+    return redirect(url_for('mycart'))
 
 if __name__ =='__main__':  
     app.run(debug = True)  
