@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
@@ -48,14 +49,14 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">Filter</a></li>
+        <li><a href="/search">Search</a></li>
         <!-- <li><a href="#">Deals</a></li> -->
         <!-- <li><a href="#">Stores</a></li> -->
         <!-- <li><a href="#">Contact</a></li> -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li> -->
-        <li><a href="/checkout"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+        <li><a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
       </ul>
     </div>
   </div>
@@ -64,18 +65,57 @@
 <div class="container">    
   <div class="row">
 
-    {%for name in mobile_names%}
+    {%for phone_model,price,ram,storage,battery in rand_mobs%}
     <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">Top selling</div>
-        <div class="panel-body"><img src="jjj" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">{{name}}</div>
+      <div class="panel panel-info">
+        <div class="panel-heading">Random Picks</div>
+        <!-- <div class="panel-body"><img src="jjj" class="img-responsive" style="width:100%" alt="Image"></div> -->
+        <div class="panel-body">{{phone_model}}</div>
+        <div class="panel-body">${{price}}</div>
+        <div class="panel-body">{{ram}}GB</div>
+        <div class="panel-body">{{storage}}GB</div>
+        <div class="panel-body">{{battery}}mAh</div>
+        <div class="card-footer text-center">
+          <!-- <button class="btn btn-primary btn-block"> Add to Cart</button> -->
+          <form method="POST" action="/add_to_cart">
+            <input type="hidden" name="name" value="{{phone_model}}">
+            <input type="hidden" name="price" value="{{price}}">
+            <input type="hidden" name="ram" value="{{ram}}">
+            <input type="hidden" name="storage" value="{{storage}}">
+            <input type="hidden" name="battery" value="{{battery}}">
+            <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {%for phone_model,price,ram,storage,battery,heir,type in heir_mobs%}
+    <div class="col-sm-4">
+      <div class="panel panel-{{type}}">
+        <div class="panel-heading">{{heir}}</div>
+        <!-- <div class="panel-body"><img src="jjj" class="img-responsive" style="width:100%" alt="Image"></div> -->
+        <div class="panel-body">{{phone_model}}</div>
+        <div class="panel-body">${{price}}</div>
+        <div class="panel-body">{{ram}}GB</div>
+        <div class="panel-body">{{storage}}GB</div>
+        <div class="panel-body">{{battery}}mAh</div>
+        <div class="card-footer text-center">
+          <!-- <button class="btn btn-primary btn-block"> Add to Cart</button> -->
+          <form method="POST" action="/add_to_cart">
+            <input type="hidden" name="name" value="{{phone_model}}">
+            <input type="hidden" name="price" value="{{price}}">
+            <input type="hidden" name="ram" value="{{ram}}">
+            <input type="hidden" name="storage" value="{{storage}}">
+            <input type="hidden" name="battery" value="{{battery}}">
+            <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+          </form>
+        </div>
       </div>
     </div>
     {% endfor %}
 </div><br>
 
-<div class="container">    
+<!-- <div class="container">    
   <div class="row">
     <div class="col-sm-4">
       <div class="panel panel-primary">
@@ -98,7 +138,7 @@
         <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div><br><br>
 
 <footer class="container-fluid text-center">
