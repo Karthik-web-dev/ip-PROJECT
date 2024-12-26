@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search Page - Mobile Store</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    .navbar {
+      margin-bottom: 50px;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Jumbotron Heading -->
+<div class="jumbotron text-center">
+    <h1>Mobile Store</h1>
+    <p>Your one-stop shop for the latest mobile phones</p>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+     
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="/home">Home</a></li>
+        <li class="active"><a href="/search">Search</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Main Content -->
+<div class="container">
+  <h2>Search Mobiles</h2>
+  <form method="POST" action="/search">
+    <div class="form-group">
+      <label for="brand">Phone Brand:</label>
+      <select class="form-control" id="brand" name="brand">
+        <option value="">All Brands</option>
+        {% for brand in brand_names %}
+        <option value="{{brand}}">{{brand}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="price">Price Range:</label>
+      <select class="form-control" id="price" name="price">
+        <option value="">All Prices</option>
+        <option value="0-200">Under $200</option>
+        <option value="200-500">$200 - $500</option>
+        <option value="500-1000">$500 - $1000</option>
+        <option value="1000-2000">$1000 - $2000</option>
+        <option value="2000-9999">Above $2000</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="sort">Sort By:</label>
+      <select class="form-control" id="sort" name="sort">
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <hr>
+  
+  <div id="results" style="margin-top: 30px;">
+    {% if phones is not none %}
+      <div class="row">
+        {% for name, price, ram, storage, battery in phones %}
+        <div class="col-md-4">
+          <div class="panel panel-info">
+            <div class="panel-heading">{{name}}</div>
+            <div class="panel-body">
+              <p>Price: ${{ price }}</p>
+              <p>RAM: {{ ram }} GB</p>
+              <p>Storage: {{ storage }} GB</p>
+              <p>Battery: {{ battery }} mAh</p>
+            </div>
+            <div class="panel-footer text-center">
+              <form method="POST" action="/add">
+
+                <form method="POST" action="/add">
+                    <input type="hidden" name="name" value="{{name}}">
+                    <input type="hidden" name="price" value="{{price}}">
+                    <input type="hidden" name="ram" value="{{ram}}">
+                    <input type="hidden" name="storage" value="{{storage}}">
+                    <input type="hidden" name="battery" value="{{battery}}">
+                    <input type="number" name="quantity" min="1" value="1" class="form-control" style="width: 70%; margin: auto;">
+                    <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+                  </form>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <script>console.log('empty')</script>
+    {% endif %}
+
+<footer class="container-fluid text-center">
+  <p>Mobile Store 2025</p>
+</footer>
+
+<script>
+    // div = document.getElementById('hide')
+    // function unhide(){
+    //     div.removeAttributes('id')
+    // }
+</script>
+</body>
+</html>

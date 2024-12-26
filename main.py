@@ -2,7 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, redirect, url_for
 import random
+import time
 
+global df
 df = pd.read_csv('data.csv')
 #cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
 
@@ -20,10 +22,41 @@ def home():
     result = [[max_row['phone_model'], max_row['price_usd'], max_row['ram'], max_row['storage'], max_row['battery'], "most expensive", "warning"],
               [min_row['phone_model'], min_row['price_usd'], min_row['ram'], min_row['storage'], min_row['battery'], "cheapest deal", "success"]]
              
-
+    print(result)
     return render_template('home.html', rand_mobs=mobile_names, heir_mobs=result)
 
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    df_filtered = None
+    if request.method == 'POST':
+        phone_brand = request.form.get('brand')
+        price_range = request.form.get('price')
+        sort_by = request.form.get('sort')
 
+        df_filtered = df[df['phone_brand'] == phone_brand]
+        # print(df_filtered)
+
+        price_range_values = price_range.split('-')
+        min_price = int(price_range_values[0])
+        max_price = int(price_range_values[1])
+        df_filtered = df_filtered[(df_filtered['price_usd'] >= min_price) & (df_filtered['price_usd'] <= max_price)]
+        # print(df_filtered)
+
+        if sort_by == 'asc':
+            df_filtered = df_filtered.sort_values(by='price_usd', ascending=True)
+        elif sort_by == 'desc':
+            df_filtered = df_filtered.sort_values(by='price_usd', ascending=False)
+        
+        df_filtered = df_filtered.loc[:, ["phone_model", "price_usd", "ram", "storage", "battery"]].values.tolist()
+
+
+
+
+    brands = df['phone_brand'].unique()
+    if df_filtered is None:
+       return render_template('search.html', brand_names=brands)
+    else:
+       return render_template('search.html', brand_names=brands, phones=df_filtered)
 
 global cart 
 cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
@@ -38,9 +71,22 @@ def add_to_cart():
         "battery": int(request.form.get("battery")),
         "quantity":1
     }
-    # Append item to the cart DataFra
     cart.loc[len(cart)] = item
     return redirect(url_for('home'))
+
+@app.route('/add', methods=['POST'])
+def add():
+    print('check')
+    item = {
+        "name": request.form.get("name"),
+        "price": request.form.get("price"),
+        "ram": int(request.form.get("ram")),
+        "storage": int(request.form.get("storage")),
+        "battery": int(request.form.get("battery")),
+        "quantity":int(request.form.get("quantity"))
+    }
+    cart.loc[len(cart)] = item
+    return redirect(url_for('search'))
 
 @app.route('/cart')
 def mycart():
@@ -68,6 +114,11 @@ def remove_item():
         cart = cart.loc[cart['name'] != phone_name]
 
     return redirect(url_for('mycart'))
+
+@app.route('/thanks')
+def thanks():
+  
+  return render_template('thankyou.html')
 
 if __name__ =='__main__':  
     app.run(debug = True)  
