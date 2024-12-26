@@ -60,7 +60,6 @@
     <div class="form-group">
       <label for="brand">Phone Brand:</label>
       <select class="form-control" id="brand" name="brand">
-        <option value="">All Brands</option>
         {% for brand in brand_names %}
         <option value="{{brand}}">{{brand}}</option>
         {% endfor %}
@@ -69,7 +68,6 @@
     <div class="form-group">
       <label for="price">Price Range:</label>
       <select class="form-control" id="price" name="price">
-        <option value="">All Prices</option>
         <option value="0-200">Under $200</option>
         <option value="200-500">$200 - $500</option>
         <option value="500-1000">$500 - $1000</option>

@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, redirect, url_for
 import random
-import time
+import os
 
 global df
 df = pd.read_csv('data.csv')
@@ -10,6 +10,15 @@ df = pd.read_csv('data.csv')
 
 app = Flask(__name__)
 
+global customer_name
+
+@app.route('/', methods=['POST', 'GET'])
+def name():
+    global customer_name
+    if request.method == 'POST':
+        customer_name = request.form.get("name")
+        return redirect(url_for('home'))
+    return render_template('index.html', redirect_url="/home")
 
 @app.route('/home')
 def home():
@@ -32,7 +41,7 @@ def search():
         phone_brand = request.form.get('brand')
         price_range = request.form.get('price')
         sort_by = request.form.get('sort')
-
+        
         df_filtered = df[df['phone_brand'] == phone_brand]
         # print(df_filtered)
 
@@ -61,6 +70,7 @@ def search():
 global cart 
 cart = pd.DataFrame(columns=["name", "price", "ram", "storage", "battery", "quantity"])
 
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     item = {
@@ -73,6 +83,7 @@ def add_to_cart():
     }
     cart.loc[len(cart)] = item
     return redirect(url_for('home'))
+
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -88,16 +99,18 @@ def add():
     cart.loc[len(cart)] = item
     return redirect(url_for('search'))
 
+
 @app.route('/cart')
 def mycart():
     print(cart)
     cart_names = cart.loc[:, ["name", "price", "ram", "storage", "battery", "quantity"]].values
     subtotal = 0
-    shipping = 10
     total = 0
+    shipping = 0
 
     for name, price, ram, storage, battery, quantity in cart_names:
-        subtotal += float(price)
+        subtotal += float(price)*int(quantity)
+        shipping += 10*int(quantity)
     subtotal = round(subtotal, 2)
     discount = round(0.1*subtotal, 2)
     total = round(subtotal + shipping - discount, 2)
@@ -105,6 +118,7 @@ def mycart():
     print(cart)
     print(cart_names)
     return render_template('cart.html', cart_mobs=cart_names, subtotal=subtotal, shipping=shipping, total=total, discount=discount)
+
 
 @app.route('/remove_item', methods=['POST'])
 def remove_item():
@@ -115,10 +129,25 @@ def remove_item():
 
     return redirect(url_for('mycart'))
 
+
+@app.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    global cart
+
+    phone_name = request.form.get('phone_name')
+    new_quantity = int(request.form.get('quantity'))
+    if phone_name in cart['name'].values:
+        cart.loc[cart['name'] == phone_name, 'quantity'] = new_quantity
+    return redirect(url_for('mycart'))
+
+
+
 @app.route('/thanks')
 def thanks():
-  
-  return render_template('thankyou.html')
+  global cart
+  cart = cart.iloc[0:0]
+  print(cart)
+  return render_template('thankyou.html', cust=customer_name)
 
 if __name__ =='__main__':  
     app.run(debug = True)  

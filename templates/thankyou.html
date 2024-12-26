@@ -20,7 +20,7 @@
 
 	<div class="main-content">
 		<i class="fa fa-check main-content__checkmark" id="checkmark"></i>
-		<p class="main-content__body" data-lead-id="main-content-body">Order placed, Thank You.<br>Redirecting to homepage in...</p>
+		<p class="main-content__body" data-lead-id="main-content-body">Order placed, Thank You {{cust}}<br>Redirecting to homepage in...</p>
 		<h1 id="countdown"></h1>
 	</div>
 
@@ -36,7 +36,7 @@ function startCountdown() {
 		countdown--;
 		setTimeout(startCountdown, 1000);
 	} else {
-		window.location.href = "/home"
+		window.location.href = "/"
 	}
 }
 

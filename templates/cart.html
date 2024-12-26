@@ -241,8 +241,20 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 quantity">
-                                                    <label for="quantity">Quantity:</label>
-                                                    <input id="quantity" min=1, type="number" value="{{quantity}}" class="form-control quantity-input">
+                                                    <!-- <label for="quantity">Quantity:</label>
+                                                    <input id="quantity" min=1, type="number" value="{{quantity}}" class="form-control quantity-input"> -->
+                                                    <form action="/update_quantity" method="POST">
+                                                        <label for="quantity">Quantity:</label>
+                                                        <input 
+                                                            id="quantity" 
+                                                            name="quantity" 
+                                                            min="1" 
+                                                            type="number" 
+                                                            value="{{quantity}}" 
+                                                            class="form-control quantity-input" />
+                                                        <input type="hidden" name="phone_name" value="{{name}}">
+                                                        <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                                                    </form>
                                                     <form action="/remove_item" method="POST">
                                                         <input type="hidden" name="phone_name" value="{{name}}">
                                                         <button type="submit" class="btn btn-danger btn-sm mt-2">
